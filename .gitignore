@@ -19,3 +19,7 @@
 
 # Go workspace file
 go.work
+# Exclude built main file
+main
+# Exclude compressed file
+*.zip
