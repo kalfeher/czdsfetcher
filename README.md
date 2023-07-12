@@ -17,7 +17,7 @@ The lambda execution role needs permission to access the secret as well as permi
                 "ssm:GetParameter"
             ],
             "Resource": [
-                "arn:aws:ssm:yourregion:123456789:parameter/dev/czda/user",
+                "arn:aws:ssm:yourregion:123456789:parameter/dev/czda/*",
                 "arn:aws:secretsmanager:yourregion:123456789:secret:dev/czda-randomdigits",
                 "arn:aws:ssm:yourregion:123456789:parameter/aws/reference/secretsmanager/dev/czda"
             ]
