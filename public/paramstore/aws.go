@@ -15,9 +15,9 @@ var (
 	ParamSecretsExtHTTPPort = "2773"
 	ParamStoreURL           = "http://localhost:" + ParamSecretsExtHTTPPort + "/systemsmanager/parameters/get?"
 	LayerHeader             = "X-Aws-Parameters-Secrets-Token"
-	Client                  = &http.Client{} // create this elsewhere and share it
-	AWSSecretsPrefix        = "/aws/reference/secretsmanager/"
-	Decrypt                 = "withDecryption"
+
+	AWSSecretsPrefix = "/aws/reference/secretsmanager/"
+	Decrypt          = "withDecryption"
 )
 
 // structs to save unmarshalled json to
@@ -45,7 +45,7 @@ func fatal(err error) string {
 }
 
 // Function to get parameter store values from lambda layer
-func GetParameterStoreValue(key string, isSecret bool) string {
+func GetParameterStoreValue(key string, isSecret bool, client *http.Client) string {
 
 	params := url.Values{}
 
@@ -54,13 +54,13 @@ func GetParameterStoreValue(key string, isSecret bool) string {
 		key = AWSSecretsPrefix + key
 	}
 	params.Add("name", key)
-	println(ParamStoreURL + key)
+
 	req, err := http.NewRequest("GET", ParamStoreURL+params.Encode(), nil)
 	if err != nil {
 		fatal(err)
 	}
 	req.Header.Add(LayerHeader, SessionToken)
-	resp, err := Client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		fatal(err)
 	} // return err

@@ -8,5 +8,7 @@ var (
 	CZDSuser       = "/dev/czda/user"
 	CZDSpassword   = "dev/czda"
 	CZDStlds       = "/dev/czda/tlds"
-	CZDSserver     = "https://postman-echo.com/post"
+	CZDSserver     = "/dev/czda/server"   // https://czds-api.icann.org
+	CZDSAuthHost   = "/dev/czda/authhost" // https://account-api.icann.org/api/authenticate/
+
 )
