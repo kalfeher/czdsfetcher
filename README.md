@@ -38,5 +38,5 @@ Set the following parameters in **SSM: Parameter Store**.
 ### Secrets
 Put your CZDA password into **Secrets Manager**. Use the name _dev/czda_. Do not use a leading '/' in the secret name.
 
-_Note that ICANN's systems appear to be unable to correctly parse any password that contains escape chars like '\'. I recommend limiting special chars in your CZDS account password strictly to those displayed on their password reset page._
+_Note that ICANN's systems appear to be unable to correctly parse any password that contains escape chars like `\`. I recommend limiting special chars in your CZDS account password strictly to those displayed on their password reset page._
 
