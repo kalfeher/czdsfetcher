@@ -28,11 +28,12 @@ The lambda execution role needs permission to access the secret as well as permi
 
 ### Parameters
 Set the following parameters in **SSM: Parameter Store**. You should 
-**Parameter Name: Value**
-_/dev/czda/authhost : https://account-api.icann.org/api/authenticate/_
-_/dev/czda/server : https://czds-api.icann.org_
-_/dev/czda/tlds : example, test_ (replace with those TLDs for which you have download permissions)
-_/dev/czda/user : myuser@example.example_ (replace with your username)
+|**Parameter Name** | **Value**|
+| --- | --- |
+|/dev/czda/authhost | https://account-api.icann.org/api/authenticate/|
+|/dev/czda/server | https://czds-api.icann.org|
+|/dev/czda/tlds | example, test _(replace with those TLDs for which you have download permissions)_|
+|/dev/czda/user | myuser@example.example _(replace with your username)_|
 
 ### Secrets
 Put your CZDA password into **Secrets Manager**. Use the name _dev/czda_. Do not use a leading '/' in the secret name.
