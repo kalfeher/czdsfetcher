@@ -27,7 +27,7 @@ The lambda execution role needs permission to access the secret as well as permi
 ```
 
 ### Parameters
-Set the following parameters in **SSM: Parameter Store**. You should 
+Set the following parameters in **SSM: Parameter Store**.
 |**Parameter Name** | **Value**|
 | --- | --- |
 |/dev/czda/authhost | https://account-api.icann.org/api/authenticate/|
