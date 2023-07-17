@@ -1,7 +1,7 @@
 package configs
 
 var (
-	Bucket         = "czds"
+	Bucket         = "/dev/czda/bucket"
 	Prefix         = ""
 	LocalDirectory = "/tmp"
 	Region         = "ap-southeast-2"
