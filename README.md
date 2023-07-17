@@ -1,7 +1,9 @@
 # czdsfetcher
-Fetch CZDS files
+Fetch CZDS files. AWS Lambda function written in go.
+
+This function makes use of several AWS services in order to remain lightweight and flexible. Most of the configuration resides in **SSM: Parameter Store**. Zone files are downloaded to an **S3** bucket, for processing by other functions.
 ## Secrets and Parameters
-The code assumes that an `AWS-Parameters-and-Secrets-Lambda-Extension` layer has been added to the lambda function. This will allow fetching secrets and parameters via **SSM:Parameter Store**. Parameters and secrets will be cached until execution is completed. No cache expiry is set.
+The code assumes that an `AWS-Parameters-and-Secrets-Lambda-Extension` layer has been added to the lambda function. This will allow fetching secrets and parameters via **SSM: Parameter Store**. Parameters and secrets will be cached until execution is completed. No cache expiry is set.
 
 Secrets are fetched by referencing AWS Secrets Manager secrets from Parameter Store parameters. In practice this involves placing a prefix to the secret-id before calling the Parameter Store cache.
 The lambda execution role needs permission to access the secret as well as permission to read the secret prefix via the parameter store.
@@ -34,6 +36,7 @@ Set the following parameters in **SSM: Parameter Store**.
 |/dev/czda/server | https://czds-api.icann.org|
 |/dev/czda/tlds | example, test _(replace with those TLDs for which you have download permissions)_|
 |/dev/czda/user | myuser@example.example _(replace with your username)_|
+|/dev/czda/bucket | mybucket _(replace with your bucket)_|
 
 ### Secrets
 Put your CZDA password into **Secrets Manager**. Use the name _dev/czda_. Do not use a leading '/' in the secret name.
