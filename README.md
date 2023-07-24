@@ -2,7 +2,7 @@
 Fetch CZDS files. AWS Lambda function written in go.
 Your **Lambda execution role** will contain 3 _permissions policies_:
 1. _AWSLambdaBasicExecutionRole_: This is the standard Lambda execution role
-1. [LambdaGetCZDAParams](#LambdaGetCZDAParams): 
+1. [LambdaGetCZDAParams](#LambdaGetCZDAParams)
 1. [S3WriteCZDA](#S3WriteCZDA)
 
 
