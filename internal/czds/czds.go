@@ -3,9 +3,12 @@ package czds
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"strings"
 )
 
@@ -47,6 +50,34 @@ func GetDownloadLinks(server string, token string, client *http.Client) []string
 
 	return downloadList
 
+}
+
+// get zone file
+func GetZoneFile(url string, localDirectory string, token string, client *http.Client) string {
+	url = strings.Trim(url, "\"")
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+	zoneFile := path.Base(req.URL.Path)
+	out, err := os.Create(localDirectory + "/" + zoneFile)
+	if err != nil {
+		log.Fatal(err)
+		return ""
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	defer out.Close()
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return out.Name()
 }
 
 // get jwt token from czds host
