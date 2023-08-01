@@ -87,3 +87,12 @@ In order to allow the lambda function to upload files to **S3** create the follo
 ```
 ## Lambda Timeout
 The default `Timeout` value for a Lambda is 15secs which will be far too short if you are downloading several TLDs. You can extend the timeout or alter the code to split TLDs between several executions.
+## Compiling for Go on Graviton 2
+Note that the binary _must_ be called **bootstrap**, when using the Amazon Linux2 custom runtime. The `Handler` value in the `Lambda: runtime settings` menu can be any value, however using 'bootstrap' will keep you sane. 
+
+You can build for your preferred architecture. The example below will build for graviton2 (arm64) because it's cheaper and cheap is good. There is no need for RPC dependency in the new AL2 instances. so the example command removes it with `tags lambda.norpc`.
+
+`GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap cmd/czdsfetch/main.go`
+
+Package up into a zip:
+`zip lambda.zip bootstrap`

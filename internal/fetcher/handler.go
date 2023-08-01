@@ -40,6 +40,5 @@ func DownloadFiles(downloadlinks []string, authtoken string, client *http.Client
 		zoneFile := czds.GetZoneFile(link, configs.LocalDirectory, authtoken, client)
 		res := s3.UploadToBucket(uploader, bucket, zoneFile)
 		fmt.Print(res)
-
 	}
 }

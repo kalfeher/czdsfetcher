@@ -21,5 +21,7 @@
 go.work
 # Exclude built main file
 main
+# Exclude lambda prescribed binary filename
+bootstrap
 # Exclude compressed file
 *.zip
