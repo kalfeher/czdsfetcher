@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -16,10 +15,6 @@ var (
 	successMessage = "Authentication Successful"
 	listDownloads  = "/czds/downloads/links"
 )
-
-type Download struct {
-	url string
-}
 
 // password struct
 type AccessToken struct {
@@ -41,7 +36,7 @@ func GetDownloadLinks(server string, token string, client *http.Client) []string
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -98,7 +93,7 @@ func GetAuthToken(server string, username string, password string, client *http.
 	// The lines below will need to be cleaned up
 	//fmt.Println("response Status:", resp.Status)
 	//fmt.Println("response Headers:", resp.Header)
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
