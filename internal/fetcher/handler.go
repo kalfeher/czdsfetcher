@@ -8,6 +8,8 @@ import (
 	"czdsfetch/public/s3"
 	"fmt"
 	"net/http"
+	"os"
+	"sync"
 
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -35,10 +37,21 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 // A function to iterate over downloadlinks and download the files
 func DownloadFiles(downloadlinks []string, authtoken string, client *http.Client, bucket string) {
 	uploader := s3.Uploader()
+	wg := sync.WaitGroup{}
+	fetchers := make(chan struct{}, configs.Fetchers)
 
 	for _, link := range downloadlinks {
-		zoneFile := czds.GetZoneFile(link, configs.LocalDirectory, authtoken, client)
-		res := s3.UploadToBucket(uploader, bucket, zoneFile)
-		fmt.Print(res)
+		wg.Add(1)
+		fetchers <- struct{}{} // Acquire a fetcher
+		go func(link string) {
+
+			zoneFile := czds.GetZoneFile(link, configs.LocalDirectory, authtoken, client)
+			res := s3.UploadToBucket(uploader, bucket, zoneFile)
+			fmt.Print(res)
+			os.Remove(zoneFile)
+			wg.Done()
+			<-fetchers // Release the fetcher
+		}(link)
+
 	}
 }
