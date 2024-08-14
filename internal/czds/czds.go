@@ -3,6 +3,7 @@ package czds
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -65,6 +66,9 @@ func GetZoneFile(url string, localDirectory string, token string, client *http.C
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if resp.StatusCode != 200 {
+		fmt.Println("HTTP status: ", resp.Status, ", Zone: ", zoneFile)
 	}
 	defer resp.Body.Close()
 	defer out.Close()
