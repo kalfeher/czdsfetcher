@@ -2,7 +2,6 @@ package s3
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -28,7 +27,7 @@ func Uploader() *manager.Uploader {
 func UploadToBucket(uploader *manager.Uploader, bucket string, uploadFile string) string {
 	key := filepath.Base(uploadFile)
 	file, err := os.Open(uploadFile)
-	fmt.Println("upload attempt: " + uploadFile)
+	//fmt.Println("upload attempt: " + uploadFile)
 	if err != nil {
 		log.Fatal(err)
 		return err.Error()

@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 )
 
@@ -74,11 +73,11 @@ func GetZoneFile(url string, localDirectory string, token string, client *http.C
 	}
 	defer resp.Body.Close()
 	defer out.Close()
-	w, err := io.Copy(out, resp.Body)
+	_, err = io.Copy(out, resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Downloaded ", strconv.FormatInt(w, 10), " bytes for ", zoneFile)
+	//fmt.Println("Downloaded ", strconv.FormatInt(w, 10), " bytes for ", zoneFile)
 	return out.Name()
 }
 

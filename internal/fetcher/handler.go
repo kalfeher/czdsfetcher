@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"sync"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -30,6 +31,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) {
 	authtoken := czds.GetAuthToken(myAuthHost, myuser, mypass, client)
 
 	downloadlinks := czds.GetDownloadLinks(server, authtoken, client)
+	fmt.Println("Download link count: " + strconv.Itoa(len(downloadlinks)))
 
 	DownloadFiles(downloadlinks, authtoken, client, bucket)
 }
@@ -47,11 +49,12 @@ func DownloadFiles(downloadlinks []string, authtoken string, client *http.Client
 
 			zoneFile := czds.GetZoneFile(link, configs.LocalDirectory, authtoken, client)
 			res := s3.UploadToBucket(uploader, bucket, zoneFile)
-			fmt.Print(res + " ")
+			fmt.Println("uploaded: " + res)
 			os.Remove(zoneFile)
 			wg.Done()
 			<-fetchers // Release the fetcher
 		}(link)
 
 	}
+	wg.Wait()
 }
