@@ -2,6 +2,7 @@ package s3
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -27,9 +28,10 @@ func Uploader() *manager.Uploader {
 func UploadToBucket(uploader *manager.Uploader, bucket string, uploadFile string) string {
 	key := filepath.Base(uploadFile)
 	file, err := os.Open(uploadFile)
+	fmt.Println("upload attempt: " + uploadFile)
 	if err != nil {
 		log.Fatal(err)
-		return ""
+		return err.Error()
 	}
 	defer file.Close()
 	result, err := uploader.Upload(context.TODO(), &s3.PutObjectInput{
@@ -39,7 +41,7 @@ func UploadToBucket(uploader *manager.Uploader, bucket string, uploadFile string
 	})
 	if err != nil {
 		log.Fatal(err)
-		return ""
+		return err.Error()
 	}
 	return result.Location
 }

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -51,7 +52,8 @@ func GetDownloadLinks(server string, token string, client *http.Client) []string
 // get zone file
 func GetZoneFile(url string, localDirectory string, token string, client *http.Client) string {
 	url = strings.Trim(url, "\"")
-
+	fmt.Println("Downloading ", url, " to ", localDirectory)
+	// Create the file
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -61,7 +63,7 @@ func GetZoneFile(url string, localDirectory string, token string, client *http.C
 	out, err := os.Create(localDirectory + "/" + zoneFile)
 	if err != nil {
 		log.Fatal(err)
-		return ""
+		return err.Error()
 	}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -72,10 +74,11 @@ func GetZoneFile(url string, localDirectory string, token string, client *http.C
 	}
 	defer resp.Body.Close()
 	defer out.Close()
-	_, err = io.Copy(out, resp.Body)
+	w, err := io.Copy(out, resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Downloaded ", strconv.FormatInt(w, 10), " bytes for ", zoneFile)
 	return out.Name()
 }
 
