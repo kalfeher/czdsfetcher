@@ -11,4 +11,5 @@ var (
 	CZDSserver     = "/dev/czda/server"   // https://czds-api.icann.org
 	CZDSAuthHost   = "/dev/czda/authhost" // https://account-api.icann.org/api/authenticate/
 	Fetchers       = 10
+	Retries        = 3
 )
