@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"czdsfetch/configs"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 )
 
@@ -50,46 +52,52 @@ func GetDownloadLinks(server string, token string, client *http.Client) []string
 }
 
 // get zone file
-func GetZoneFile(url string, localDirectory string, token string, client *http.Client) string {
+func GetZoneFile(url string, localDirectory string, token string, client *http.Client) (string, error) {
 	url = strings.Trim(url, "\"")
 	for i := 0; i < configs.Retries; {
 		fmt.Println("Downloading ", url, " to ", localDirectory, "attempt ", i+1)
 		// Create the file
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println("Error: ", err.Error(), " Zone: ", path.Base(req.URL.Path))
+			continue
 		}
 		req.Header.Add("Authorization", "Bearer "+token)
 		zoneFile := path.Base(req.URL.Path)
 		out, err := os.Create(localDirectory + "/" + zoneFile)
 		if err != nil {
-			fmt.Println("Error: ", err.Error(), ", Zone: ", zoneFile)
+			fmt.Println("Error: ", err.Error(), " Zone: ", zoneFile)
 			continue
 		}
 		defer out.Close()
 		resp, err := client.Do(req)
 		if err != nil {
-			fmt.Println("Error: ", err.Error(), ", Zone: ", zoneFile)
+			fmt.Println("Error: ", err.Error(), " Zone: ", zoneFile)
 			continue
 		}
 		defer resp.Body.Close()
 		if resp.StatusCode != 200 {
-			fmt.Println("HTTP status: ", resp.Status, ", Zone: ", zoneFile)
+			fmt.Println("HTTP status: ", resp.Status, " Zone: ", zoneFile)
 			continue
 		}
+		var buf []byte
 		if zoneFile == "com.zone" {
-			fmt.Println("Downloaded ", zoneFile, ", now saving to ", localDirectory)
+			buf = make([]byte, 50*1024*1024) //50MB
+		} else {
+			buf = make([]byte, 5*1024*1024) //5MB
 		}
 
-		_, err = io.Copy(out, resp.Body)
+		_, err = io.CopyBuffer(out, resp.Body, buf)
 		if err != nil {
-			fmt.Println("Error: ", err.Error(), ", Zone: ", zoneFile)
+			fmt.Println("Error: ", err.Error(), " Zone: ", zoneFile)
 			continue
 		}
 
-		return out.Name()
+		return out.Name(), nil
 	}
-	return "Error: Failed to download zone file"
+	//if we reach here, we failed to download the zone file after all retries
+	e := errors.New("Error: Failed to download zone file after " + strconv.Itoa(configs.Retries) + " attempts")
+	return "", e
 }
 
 // get jwt token from czds host

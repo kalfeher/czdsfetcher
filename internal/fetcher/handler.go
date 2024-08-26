@@ -47,7 +47,13 @@ func DownloadFiles(downloadlinks []string, authtoken string, client *http.Client
 		fetchers <- struct{}{} // Acquire a fetcher
 		go func(link string) {
 
-			zoneFile := czds.GetZoneFile(link, configs.LocalDirectory, authtoken, client)
+			zoneFile, err := czds.GetZoneFile(link, configs.LocalDirectory, authtoken, client)
+			if err != nil {
+				fmt.Println(err)
+				wg.Done()
+				<-fetchers // Release the fetcher
+				return
+			}
 			res := s3.UploadToBucket(uploader, bucket, zoneFile)
 			fmt.Println("uploaded: " + res)
 			os.Remove(zoneFile)
